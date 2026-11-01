@@ -1,788 +1,448 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLauncher — Next-Gen Minecraft Launcher</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            900: '#0c4a6e',
-                            accent: '#6366f1',
-                            glow: '#00f2fe'
-                        },
-                        dark: {
-                            base: '#07090e',
-                            surface: '#0f172a',
-                            card: 'rgba(15, 23, 42, 0.7)',
-                            border: 'rgba(255, 255, 255, 0.08)'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
-                    },
-                    boxShadow: {
-                        'neon': '0 0 25px -5px rgba(14, 165, 233, 0.5), 0 0 10px -2px rgba(99, 102, 241, 0.3)',
-                        'neon-strong': '0 0 40px 0px rgba(14, 165, 233, 0.65)',
-                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
-                        'gradient-x': 'gradientX 8s ease infinite'
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-12px)' },
-                        },
-                        pulseGlow: {
-                            '0%, 100%': { opacity: '0.4' },
-                            '50%': { opacity: '0.8' },
-                        },
-                        gradientX: {
-                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
-                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <title>GLauncher — Minecraft Launcher</title>
     <style>
+        :root {
+            --bg-dark: #0a0f14;
+            --panel-bg: #0d1b2a;
+            --card-bg: #0f2936;
+            --card-border: #1b4965;
+            --accent-cyan: #00a8cc;
+            --btn-blue: #168bb0;
+            --btn-green: #23a971;
+            --text-main: #ffffff;
+            --text-muted: #8da4b4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #05070c;
-            color: #f3f4f6;
-            overflow-x: hidden;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Glassmorphism utility */
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: var(--panel-bg);
+            border-bottom: 1px solid var(--card-border);
         }
 
-        .glass-panel-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-panel-hover:hover {
-            background: rgba(30, 41, 59, 0.75);
-            border-color: rgba(56, 189, 248, 0.4);
-            box-shadow: 0 12px 30px -10px rgba(14, 165, 233, 0.3);
-            transform: translateY(-4px);
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #05070c;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #0ea5e9;
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1b4965, #00a8cc);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.4rem;
         }
 
-        /* Animated Grid Overlay */
-        .grid-bg {
-            background-size: 40px 40px;
-            background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        .lang-switch button {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 6px 14px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-left: 4px;
+            transition: 0.2s;
+            font-weight: 600;
+        }
+
+        .lang-switch button.active, .lang-switch button:hover {
+            background-color: var(--btn-blue);
+            border-color: var(--accent-cyan);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 50px 20px 30px 20px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 24px auto;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #168bb0, #00a8cc);
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 16px 36px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 168, 204, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 168, 204, 0.5);
+        }
+
+        /* Mockup Window */
+        .preview-container {
+            max-width: 1000px;
+            width: 95%;
+            margin: 30px auto 60px auto;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        .window-header {
+            background-color: #081119;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .window-controls span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 6px;
+            background-color: #444;
+        }
+
+        .mockup-body {
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        .mockup-tab-content {
+            display: none;
+        }
+
+        .mockup-tab-content.active {
+            display: block;
+        }
+
+        /* Hero banner inside mockup */
+        .mockup-hero-banner {
+            background: linear-gradient(90deg, #0f2936, #1b4965);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .mockup-hero-banner h2 {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .mockup-hero-banner p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .mockup-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 20px;
+        }
+
+        .mockup-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 15px;
+        }
+
+        .mockup-card-title {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .btn-launch {
+            width: 100%;
+            background-color: var(--btn-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* Bottom Nav Bar inside mockup */
+        .mockup-bottom-bar {
+            background-color: #081119;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.2s;
+        }
+
+        .nav-btn.active, .nav-btn:hover {
+            background-color: var(--btn-blue);
+            border-color: var(--accent-cyan);
+        }
+
+        .profile-selects {
+            display: flex;
+            gap: 12px;
+        }
+
+        .select-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--card-border);
+            margin-top: auto;
         }
     </style>
 </head>
-<body class="relative min-h-screen">
+<body>
 
-    <!-- Ambient Glowing Orbs Background -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div class="absolute -top-40 -left-40 w-96 h-96 bg-brand-500/20 rounded-full blur-[120px] animate-pulse-glow"></div>
-        <div class="absolute top-1/3 -right-40 w-[500px] h-[500px] bg-brand-accent/20 rounded-full blur-[140px] animate-pulse-glow" style="animation-delay: 1.5s;"></div>
-        <div class="absolute -bottom-40 left-1/3 w-[600px] h-[600px] bg-sky-600/15 rounded-full blur-[160px] animate-pulse-glow" style="animation-delay: 3s;"></div>
-        <div class="absolute inset-0 grid-bg opacity-70"></div>
-    </div>
-
-    <!-- HEADER / NAVBAR -->
-    <header class="sticky top-0 z-50 glass-panel border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Brand Logo -->
-            <a href="#" class="flex items-center gap-3 group">
-                <div class="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-brand-400 to-brand-accent p-0.5 shadow-neon transition-transform duration-300 group-hover:scale-105">
-                    <div class="w-full h-full bg-dark-surface rounded-[10px] flex items-center justify-center">
-                        <svg class="w-6 h-6 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                            <polyline points="2 17 12 22 22 17"></polyline>
-                            <polyline points="2 12 12 17 22 12"></polyline>
-                        </svg>
-                    </div>
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-black text-xl tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-brand-400">
-                        G<span class="text-brand-400">LAUNCHER</span>
-                    </span>
-                    <span class="text-[10px] tracking-widest text-slate-400 uppercase font-mono">Minecraft Core</span>
-                </div>
-            </a>
-
-            <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-                <a href="#features" class="hover:text-brand-400 transition-colors" data-i18n="nav-features">Features</a>
-                <a href="#preview" class="hover:text-brand-400 transition-colors" data-i18n="nav-preview">Gallery</a>
-                <a href="#specs" class="hover:text-brand-400 transition-colors" data-i18n="nav-specs">Requirements</a>
-                <a href="#faq" class="hover:text-brand-400 transition-colors" data-i18n="nav-faq">FAQ</a>
-            </nav>
-
-            <!-- Language Switcher & Download Nav CTA -->
-            <div class="flex items-center gap-4">
-                <!-- Language Selector Pill -->
-                <div class="flex items-center p-1 rounded-xl bg-slate-900/80 border border-white/10 text-xs font-semibold">
-                    <button onclick="setLang('ru')" id="lang-ru" class="px-2.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white">RU</button>
-                    <button onclick="setLang('ua')" id="lang-ua" class="px-2.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white">UA</button>
-                    <button onclick="setLang('en')" id="lang-en" class="px-2.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white">EN</button>
-                </div>
-
-                <!-- Nav Button -->
-                <a href="GLauncher_Installer.exe" download class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-accent text-white text-xs font-bold shadow-neon hover:opacity-90 transition-all hover:scale-105 active:scale-95">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                    <span data-i18n="nav-download">Download</span>
-                </a>
-            </div>
+    <header>
+        <div class="logo-group">
+            <div class="logo-icon">G</div>
+            <span>GLauncher</span>
+        </div>
+        <div class="lang-switch">
+            <button onclick="setLang('ru')" id="btn-ru" class="active">RU</button>
+            <button onclick="setLang('ua')" id="btn-ua">UA</button>
+            <button onclick="setLang('en')" id="btn-en">EN</button>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section class="relative z-10 pt-16 pb-24 md:pt-28 md:pb-36 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto space-y-6">
-            <!-- Release Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel border-brand-500/30 text-xs font-semibold text-brand-400 mb-2 animate-bounce">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span data-i18n="hero-badge">v1.0.0 Release Ready • High Performance</span>
-            </div>
-
-            <!-- Main Heading -->
-            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-tight">
-                <span data-i18n="hero-title-1">Experience Minecraft</span> <br>
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-400 via-sky-300 to-brand-accent animate-gradient-x" data-i18n="hero-title-2">
-                    Without Limits
-                </span>
-            </h1>
-
-            <!-- Subtitle -->
-            <p class="text-lg sm:text-xl text-slate-300 font-normal leading-relaxed max-w-2xl mx-auto" data-i18n="hero-subtitle">
-                Lightweight, lightning-fast, and multi-language Minecraft launcher built for maximum performance, seamless mod integration, and effortless skin management.
-            </p>
-
-            <!-- Action Buttons -->
-            <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="GLauncher_Installer.exe" download class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 via-sky-500 to-brand-accent text-white font-extrabold text-base shadow-neon-strong hover:shadow-neon hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 group">
-                    <svg class="w-6 h-6 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                    </svg>
-                    <span data-i18n="hero-btn-download">Download for Windows</span>
-                </a>
-                <a href="#preview" class="w-full sm:w-auto px-8 py-4 rounded-2xl glass-panel hover:bg-slate-800/80 text-slate-200 font-semibold text-base border border-white/10 hover:border-brand-400/40 transition-all duration-300 flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span data-i18n="hero-btn-demo">View Preview</span>
-                </a>
-            </div>
-
-            <!-- Platform Details -->
-            <div class="pt-2 flex items-center justify-center gap-6 text-xs text-slate-400 font-mono">
-                <span class="flex items-center gap-1.5"><svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.801"/></svg> Windows 10/11 Compatible</span>
-                <span>•</span>
-                <span data-i18n="hero-size">Setup Size: ~45 MB</span>
-            </div>
-        </div>
-
-        <!-- 3D Launcher Mockup Showcase -->
-        <div class="mt-14 relative max-w-5xl mx-auto animate-float">
-            <!-- Glow background behind app mockup -->
-            <div class="absolute -inset-1 bg-gradient-to-r from-brand-500 to-brand-accent rounded-3xl blur-2xl opacity-40"></div>
-            
-            <!-- Window Container -->
-            <div class="relative glass-panel rounded-2xl border border-white/15 overflow-hidden shadow-2xl">
-                <!-- Mac/Windows Style Window Titlebar -->
-                <div class="h-10 bg-slate-950/80 px-4 flex items-center justify-between border-b border-white/10">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
-                        <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
-                        <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
-                    </div>
-                    <span class="text-xs font-mono text-slate-400 font-semibold">GLauncher v1.0.0 — CustomTkinter Core</span>
-                    <div class="w-12"></div>
-                </div>
-
-                <!-- Mockup App Content Canvas -->
-                <div class="p-6 md:p-8 bg-slate-950/90 grid grid-cols-1 md:grid-cols-12 gap-6 min-h-[420px]">
-                    <!-- App Sidebar -->
-                    <div class="md:col-span-3 space-y-4 border-r border-white/5 pr-4 hidden md:block">
-                        <div class="p-3 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-brand-500/20 flex items-center justify-center text-brand-400 font-bold">G</div>
-                            <div class="text-xs">
-                                <div class="font-bold text-white">Player_One</div>
-                                <div class="text-emerald-400 font-mono text-[10px]">● Online</div>
-                            </div>
-                        </div>
-
-                        <div class="space-y-1">
-                            <div class="px-3 py-2 rounded-lg bg-brand-500/20 text-brand-400 text-xs font-semibold flex items-center justify-between">
-                                <span data-i18n="mock-play">Play Game</span>
-                                <span class="w-1.5 h-1.5 rounded-full bg-brand-400"></span>
-                            </div>
-                            <div class="px-3 py-2 rounded-lg text-slate-400 hover:bg-white/5 text-xs font-medium cursor-pointer" data-i18n="mock-versions">Versions & Mods</div>
-                            <div class="px-3 py-2 rounded-lg text-slate-400 hover:bg-white/5 text-xs font-medium cursor-pointer" data-i18n="mock-skins">Skins & Capes</div>
-                            <div class="px-3 py-2 rounded-lg text-slate-400 hover:bg-white/5 text-xs font-medium cursor-pointer" data-i18n="mock-settings">Settings</div>
-                        </div>
-                    </div>
-
-                    <!-- App Main Area -->
-                    <div class="md:col-span-9 flex flex-col justify-between space-y-6">
-                        <!-- Top Version Selector Banner -->
-                        <div class="relative h-44 rounded-xl overflow-hidden bg-gradient-to-r from-slate-900 to-slate-800 p-6 flex flex-col justify-end border border-white/10">
-                            <!-- Background Minecraft style graphic pattern -->
-                            <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#0ea5e9_1px,transparent_1px)] [background-size:16px_16px]"></div>
-                            <div class="relative z-10 space-y-1">
-                                <span class="px-2.5 py-0.5 rounded bg-brand-500/30 text-brand-300 text-[10px] font-mono font-bold uppercase tracking-wider">Selected Version</span>
-                                <h3 class="text-2xl font-black text-white">Minecraft 1.20.4 <span class="text-xs font-normal text-slate-400 font-mono">(OptiFine / Forge Ready)</span></h3>
-                            </div>
-                        </div>
-
-                        <!-- Lower Control Panel -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div class="p-3 rounded-xl bg-slate-900/60 border border-white/5 text-xs">
-                                <span class="text-slate-400 block mb-1" data-i18n="mock-ram">RAM Allocation</span>
-                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-brand-500 h-full w-2/3"></div>
-                                </div>
-                                <span class="text-[10px] text-slate-400 mt-1 block font-mono">6144 MB / 16384 MB</span>
-                            </div>
-
-                            <div class="p-3 rounded-xl bg-slate-900/60 border border-white/5 text-xs">
-                                <span class="text-slate-400 block mb-1" data-i18n="mock-lang">Active Language</span>
-                                <div class="font-semibold text-slate-200 flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                                    <span>RU / UA / EN Integrated</span>
-                                </div>
-                            </div>
-
-                            <!-- Big Play Button Mock -->
-                            <button class="sm:col-span-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg flex items-center justify-center gap-2 transition-all">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                <span data-i18n="mock-launch-btn">LAUNCH GAME</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <section class="hero">
+        <h1 id="hero-title">GLauncher Beta 1.0.3</h1>
+        <p id="hero-desc">Современный, быстрый и удобный лаунчер Minecraft Java Edition с поддержкой модов и скинов.</p>
+        <a href="GLauncher_Installer.exe" class="btn-download" id="download-btn">
+            📥 Скачать для Windows
+        </a>
     </section>
 
-    <!-- FEATURES SECTION -->
-    <section id="features" class="relative z-10 py-20 bg-slate-950/60 border-t border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
-                <h2 class="text-3xl sm:text-4xl font-extrabold" data-i18n="feat-heading">Designed for Maximum Efficiency</h2>
-                <p class="text-slate-400 text-sm sm:text-base" data-i18n="feat-subheading">Engineered with Python & CustomTkinter for ultra-low memory overhead and maximum FPS during gameplay.</p>
-            </div>
-
-            <!-- Features Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Feature 1 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-2xl space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white" data-i18n="f1-title">Ultra-Fast Launch</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed" data-i18n="f1-desc">Zero bloatware background processes. Launches Minecraft within seconds using optimized libraries.</p>
-                </div>
-
-                <!-- Feature 2 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-2xl space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white" data-i18n="f2-title">Triple Language Support</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed" data-i18n="f2-desc">Native internationalization supporting Russian, Ukrainian, and English language switching seamlessly.</p>
-                </div>
-
-                <!-- Feature 3 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-2xl space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white" data-i18n="f3-title">Custom Skins & HD Capes</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed" data-i18n="f3-desc">Upload, preview, and apply custom skins and high-resolution capes with one click before joining servers.</p>
-                </div>
-
-                <!-- Feature 4 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-2xl space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white" data-i18n="f4-title">Forge / Fabric / OptiFine</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed" data-i18n="f4-desc">Automatic version downloader for Forge, Fabric, Quilt, and OptiFine mod loaders with automated Java setup.</p>
-                </div>
-
-                <!-- Feature 5 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-2xl space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white" data-i18n="f5-title">1-Click Windows Setup</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed" data-i18n="f5-desc">Professional Inno Setup installer. Configures desktop shortcuts, paths, and dependencies effortlessly.</p>
-                </div>
-
-                <!-- Feature 6 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-2xl space-y-4">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white" data-i18n="f6-title">Automatic Updates</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed" data-i18n="f6-desc">Stays synchronized with official Minecraft releases and launcher security patches without manual reinstalls.</p>
-                </div>
+    <!-- Interactive Mockup -->
+    <div class="preview-container">
+        <div class="window-header">
+            <span>GLauncher Beta 1.0.3 — Minecraft Launcher</span>
+            <div class="window-controls">
+                <span></span><span></span><span></span>
             </div>
         </div>
-    </section>
 
-    <!-- PREVIEW GALLERY / CAROUSEL -->
-    <section id="preview" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <h2 class="text-3xl sm:text-4xl font-extrabold" data-i18n="gallery-heading">Interface Showcase</h2>
-            <p class="text-slate-400 text-sm sm:text-base" data-i18n="gallery-subheading">Take a look inside GLauncher's sleek and responsive user interface.</p>
-        </div>
+        <div class="mockup-body">
+            <!-- TAB 1: MAIN -->
+            <div id="tab-main" class="mockup-tab-content active">
+                <div class="mockup-hero-banner">
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--accent-cyan); letter-spacing: 1px;">GLAUNCHER / MINECRAFT JAVA</div>
+                        <h2 id="m-banner-title">ТВОЁ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ</h2>
+                        <p id="m-banner-desc">Управляй версиями, собирай модпаки и настраивай игру под себя.</p>
+                    </div>
+                    <div class="logo-icon" style="width: 50px; height: 50px; font-size: 1.8rem;">G</div>
+                </div>
 
-        <!-- Interactive Gallery Box -->
-        <div class="glass-panel p-4 md:p-6 rounded-3xl border border-white/10 space-y-6">
-            <!-- Tabs Header -->
-            <div class="flex flex-wrap items-center justify-center gap-2 border-b border-white/10 pb-4">
-                <button onclick="switchTab('main')" id="tab-main" class="px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all bg-brand-500 text-white shadow-neon">
-                    🎮 Main Dashboard
-                </button>
-                <button onclick="switchTab('version')" id="tab-version" class="px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all text-slate-400 hover:text-white hover:bg-white/5">
-                    ⚙️ Version Manager
-                </button>
-                <button onclick="switchTab('skin')" id="tab-skin" class="px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all text-slate-400 hover:text-white hover:bg-white/5">
-                    👕 Skin & Cape Studio
-                </button>
-            </div>
-
-            <!-- Tab Content Viewport -->
-            <div class="relative min-h-[350px] sm:min-h-[450px] bg-slate-950 rounded-2xl overflow-hidden flex items-center justify-center p-6 border border-white/5">
-                <!-- Tab 1: Main Dashboard View -->
-                <div id="view-main" class="tab-view w-full max-w-3xl space-y-6">
-                    <div class="flex items-center justify-between p-4 bg-slate-900/90 rounded-xl border border-white/10">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-brand-500/20 flex items-center justify-center font-bold text-brand-400">GL</div>
-                            <div>
-                                <h4 class="font-bold text-sm text-white">GLauncher Standard Client</h4>
-                                <span class="text-xs text-slate-400 font-mono">Status: Ready to Launch</span>
+                <div class="mockup-grid">
+                    <div>
+                        <div class="mockup-card">
+                            <div class="mockup-card-title">ИГРОВОЙ ЦЕНТР</div>
+                            <div style="margin-bottom: 15px; background: #0b1724; padding: 10px; border-radius: 6px;">
+                                <small style="color: var(--accent-cyan);">✦ Твой профиль</small> <br>
+                                <span style="font-size: 0.85rem;">Ник и версия — в нижней панели</span>
                             </div>
-                        </div>
-                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">1.20.4 Latest</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-4 bg-slate-900/50 rounded-xl border border-white/5 space-y-2">
-                            <span class="text-xs text-slate-400">Allocated Memory</span>
-                            <div class="text-lg font-bold text-brand-400 font-mono">8192 MB RAM</div>
-                        </div>
-                        <div class="p-4 bg-slate-900/50 rounded-xl border border-white/5 space-y-2">
-                            <span class="text-xs text-slate-400">Java Runtime</span>
-                            <div class="text-lg font-bold text-indigo-400 font-mono">OpenJDK 17.0.8</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab 2: Version Manager View -->
-                <div id="view-version" class="tab-view hidden w-full max-w-3xl space-y-3">
-                    <div class="p-3 bg-slate-900/90 rounded-xl border border-brand-500/40 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <span class="px-2 py-1 bg-brand-500/20 text-brand-300 text-xs font-mono rounded">RELEASE</span>
-                            <span class="font-bold text-sm text-white">Minecraft 1.20.4</span>
-                        </div>
-                        <span class="text-xs text-emerald-400 font-semibold">Installed ✓</span>
-                    </div>
-                    <div class="p-3 bg-slate-900/50 rounded-xl border border-white/5 flex items-center justify-between opacity-75">
-                        <div class="flex items-center gap-3">
-                            <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs font-mono rounded">FABRIC</span>
-                            <span class="font-bold text-sm text-white">Fabric 1.20.2</span>
-                        </div>
-                        <button class="px-3 py-1 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg text-white">Download</button>
-                    </div>
-                    <div class="p-3 bg-slate-900/50 rounded-xl border border-white/5 flex items-center justify-between opacity-75">
-                        <div class="flex items-center gap-3">
-                            <span class="px-2 py-1 bg-amber-500/20 text-amber-300 text-xs font-mono rounded">FORGE</span>
-                            <span class="font-bold text-sm text-white">Forge 1.19.4</span>
-                        </div>
-                        <button class="px-3 py-1 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg text-white">Download</button>
-                    </div>
-                </div>
-
-                <!-- Tab 3: Skin Studio View -->
-                <div id="view-skin" class="tab-view hidden w-full max-w-3xl flex flex-col items-center justify-center space-y-4 text-center">
-                    <div class="w-24 h-40 rounded-xl bg-gradient-to-b from-brand-500/20 to-brand-accent/20 border border-brand-400/40 flex items-center justify-center">
-                        <div class="space-y-2">
-                            <div class="w-8 h-8 rounded-full bg-amber-400/80 mx-auto"></div>
-                            <div class="w-12 h-16 bg-blue-500/80 rounded-md mx-auto"></div>
+                            <button class="btn-launch" id="m-launch-btn">► ЗАПУСТИТЬ VANILLA</button>
                         </div>
                     </div>
                     <div>
-                        <h4 class="font-bold text-white text-base">Steve_Custom_HD.png</h4>
-                        <p class="text-xs text-slate-400">64x64 Slim Arms Skin Format</p>
-                    </div>
-                    <button class="px-6 py-2.5 rounded-xl bg-brand-500 text-white font-bold text-xs shadow-neon">Upload New Skin</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SYSTEM REQUIREMENTS SECTION -->
-    <section id="specs" class="py-20 bg-slate-950/60 border-t border-b border-white/5">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-14 space-y-3">
-                <h2 class="text-3xl font-extrabold" data-i18n="specs-heading">System Requirements</h2>
-                <p class="text-slate-400 text-sm" data-i18n="specs-subheading">Check if your Windows PC meets the launcher specifications.</p>
-            </div>
-
-            <!-- Specs Table Container -->
-            <div class="glass-panel rounded-2xl overflow-hidden border border-white/10">
-                <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10">
-                    <!-- Minimum Specs -->
-                    <div class="p-6 md:p-8 space-y-6">
-                        <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
-                            <h3 class="text-lg font-bold text-white" data-i18n="spec-min-title">Minimum Requirements</h3>
+                        <div class="mockup-card">
+                            <div class="mockup-card-title">✦ ОБНОВЛЕНИЯ</div>
+                            <h4 style="margin-bottom: 6px;">GLauncher Beta</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Новый интерфейс в зелёно-синих тонах. Индикатор установки и запуска Vanilla.</p>
                         </div>
-                        <ul class="space-y-4 text-sm text-slate-300 font-mono">
-                            <li class="flex justify-between border-b border-white/5 pb-2">
-                                <span class="text-slate-400">OS:</span>
-                                <span>Windows 10 (64-bit)</span>
-                            </li>
-                            <li class="flex justify-between border-b border-white/5 pb-2">
-                                <span class="text-slate-400">Processor:</span>
-                                <span>Intel Core i3-3210 / AMD A8-7600</span>
-                            </li>
-                            <li class="flex justify-between border-b border-white/5 pb-2">
-                                <span class="text-slate-400">RAM:</span>
-                                <span>4 GB System Memory</span>
-                            </li>
-                            <li class="flex justify-between border-b border-white/5 pb-2">
-                                <span class="text-slate-400">Graphics:</span>
-                                <span>Intel HD Graphics 4000</span>
-                            </li>
-                            <li class="flex justify-between">
-                                <span class="text-slate-400">Disk Space:</span>
-                                <span>1 GB free space</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Recommended Specs -->
-                    <div class="p-6 md:p-8 space-y-6 bg-brand-500/5">
-                        <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
-                            <h3 class="text-lg font-bold text-white" data-i18n="spec-rec-title">Recommended Specs</h3>
+                        <div class="mockup-card" style="border-color: var(--btn-green); background: rgba(35, 169, 113, 0.1);">
+                            <div style="color: var(--btn-green); font-weight: bold; font-size: 0.85rem;">● СИСТЕМА ГОТОВА</div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">GLauncher помогает управлять твоими версиями и модпаками.</p>
                         </div>
-                        <ul class="space-y-4 text-sm text-slate-300 font-mono">
-                            <li class="flex justify-between border-b border-white/5 pb-2">
-                                <span class="text-slate-400">OS:</span>
-                                <span>Windows 11 (64-bit)</span>
-                            </li>
-                            <li class="flex justify-between border-b border-white/5 pb-2">
-                                <span class="text-slate-400">Processor:</span>
-                                <span>Intel Core i5-4690 / AMD Ryzen 3 1200</span>
-                            </li>
-                            <li class="flex justify-between border-b border-white/5 pb-2">
-                                <span class="text-slate-400">RAM:</span>
-                                <span>8 GB+ DDR4 Memory</span>
-                            </li>
-                            <li class="flex justify-between border-b border-white/5 pb-2">
-                                <span class="text-slate-400">Graphics:</span>
-                                <span>NVIDIA GTX 1060 / AMD RX 580</span>
-                            </li>
-                            <li class="flex justify-between">
-                                <span class="text-slate-400">Disk Space:</span>
-                                <span>4 GB+ SSD Storage</span>
-                            </li>
-                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: MODS -->
+            <div id="tab-mods" class="mockup-tab-content">
+                <h3 style="margin-bottom: 15px;" id="m-mods-title">Менеджер Модпаков и Модов</h3>
+                <div class="mockup-card">
+                    <div style="font-size: 0.85rem; margin-bottom: 10px;">Создать новый модпак:</div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" placeholder="Название модпака..." style="flex:1; background: #081119; border: 1px solid var(--card-border); color: white; padding: 8px; border-radius: 4px;">
+                        <div class="select-box">26.3 ▾</div>
+                        <div class="select-box">fabric ▾</div>
+                        <button style="background: var(--btn-blue); color: white; border: none; padding: 8px 16px; border-radius: 4px;">Создать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SETTINGS -->
+            <div id="tab-settings" class="mockup-tab-content">
+                <h3 style="margin-bottom: 15px;" id="m-set-title">Настройки GLauncher</h3>
+                <div class="mockup-card">
+                    <div style="font-size: 0.85rem; margin-bottom: 8px;">Выделение оперативной памяти (RAM):</div>
+                    <div class="select-box" style="justify-content: space-between; margin-bottom: 15px;">
+                        <span>6 ГБ</span> <span>▾</span>
+                    </div>
+                    <div style="font-size: 0.85rem; margin-bottom: 8px;">Путь к игре:</div>
+                    <div style="background: #081119; padding: 8px; border-radius: 4px; border: 1px solid var(--card-border); font-family: monospace; font-size: 0.85rem; color: var(--text-muted);">
+                        C:\Users\Compic\.glauncher
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- FAQ SECTION -->
-    <section id="faq" class="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-extrabold" data-i18n="faq-heading">Frequently Asked Questions</h2>
-        </div>
-
-        <div class="space-y-4">
-            <!-- FAQ Item 1 -->
-            <details class="glass-panel rounded-2xl p-6 group [&_summary::-webkit-details-marker]:hidden cursor-pointer">
-                <summary class="flex items-center justify-between text-white font-semibold text-base">
-                    <span data-i18n="faq-q1">Is GLauncher completely free to download?</span>
-                    <span class="ml-4 transition-transform group-open:rotate-180 text-brand-400">▼</span>
-                </summary>
-                <p class="mt-4 text-slate-400 text-sm leading-relaxed" data-i18n="faq-a1">
-                    Yes, GLauncher is 100% free to download and use. It contains no hidden fees or paywalls.
-                </p>
-            </details>
-
-            <!-- FAQ Item 2 -->
-            <details class="glass-panel rounded-2xl p-6 group [&_summary::-webkit-details-marker]:hidden cursor-pointer">
-                <summary class="flex items-center justify-between text-white font-semibold text-base">
-                    <span data-i18n="faq-q2">Does it support OptiFine and Forge mods?</span>
-                    <span class="ml-4 transition-transform group-open:rotate-180 text-brand-400">▼</span>
-                </summary>
-                <p class="mt-4 text-slate-400 text-sm leading-relaxed" data-i18n="faq-a2">
-                    Yes, you can easily install and switch between Vanilla, OptiFine, Forge, and Fabric client profiles right inside the versions menu.
-                </p>
-            </details>
-
-            <!-- FAQ Item 3 -->
-            <details class="glass-panel rounded-2xl p-6 group [&_summary::-webkit-details-marker]:hidden cursor-pointer">
-                <summary class="flex items-center justify-between text-white font-semibold text-base">
-                    <span data-i18n="faq-q3">How do I change the launcher language?</span>
-                    <span class="ml-4 transition-transform group-open:rotate-180 text-brand-400">▼</span>
-                </summary>
-                <p class="mt-4 text-slate-400 text-sm leading-relaxed" data-i18n="faq-a3">
-                    You can switch between Russian, Ukrainian, and English either directly on this website or inside the Settings menu of the GLauncher application.
-                </p>
-            </details>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="glass-panel border-t border-white/10 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-            <div class="space-y-2">
-                <div class="flex items-center justify-center md:justify-start gap-2">
-                    <div class="w-6 h-6 rounded bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-xs">G</div>
-                    <span class="font-bold text-white text-base">GLauncher Team</span>
-                </div>
-                <p class="text-xs text-slate-500">&copy; 2026 GLauncher. Not affiliated with Mojang Studios or Microsoft.</p>
+        <!-- Interactive Nav Bar -->
+        <div class="mockup-bottom-bar">
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="switchMockupTab('main', this)">🏠</button>
+                <button class="nav-btn" onclick="switchMockupTab('mods', this)">📦</button>
+                <button class="nav-btn" onclick="switchMockupTab('settings', this)">⚙️</button>
             </div>
-
-            <!-- Download Quick Link -->
-            <a href="GLauncher_Installer.exe" download class="px-6 py-2.5 rounded-xl bg-white/10 hover:bg-brand-500 hover:text-white transition-all text-xs font-bold text-slate-300">
-                GLauncher_Installer.exe (v1.0.0)
-            </a>
+            <div class="profile-selects">
+                <div class="select-box"><span>ПРОФИЛЬ</span> <strong>KELIRT</strong> ▾</div>
+                <div class="select-box"><strong>26.3</strong> ▾</div>
+            </div>
         </div>
+    </div>
+
+    <footer>
+        &copy; 2026 GLauncher Team. All rights reserved.
     </footer>
 
-    <!-- INTERACTIVE JAVASCRIPT -->
     <script>
-        // Multi-Language Dictionary
-        const i18nData = {
+        const i18n = {
             ru: {
-                'nav-features': 'Возможности',
-                'nav-preview': 'Галерея',
-                'nav-specs': 'Требования',
-                'nav-faq': 'Вопросы',
-                'nav-download': 'Скачать',
-                'hero-badge': 'v1.0.0 Релиз Готов • Высокая Скорость',
-                'hero-title-1': 'Играй в Minecraft',
-                'hero-title-2': 'Без Ограничений',
-                'hero-subtitle': 'Быстрый, легкий и современный лаунчер Minecraft с поддержкой русского, украинского и английского языков.',
-                'hero-btn-download': 'Скачать для Windows',
-                'hero-btn-demo': 'Смотреть Обзор',
-                'hero-size': 'Размер файла: ~45 МБ',
-                'mock-play': 'Играть',
-                'mock-versions': 'Версии и Моды',
-                'mock-skins': 'Скины и Плащи',
-                'mock-settings': 'Настройки',
-                'mock-ram': 'Выделение ОЗУ',
-                'mock-lang': 'Активный Язык',
-                'mock-launch-btn': 'ЗАПУСТИТЬ ИГРУ',
-                'feat-heading': 'Создан для Максимальной Скорости',
-                'feat-subheading': 'Оптимизирован для быстрой загрузки игры и минимального потребления оперативной памяти.',
-                'f1-title': 'Быстрый Запуск',
-                'f1-desc': 'Без фоновых процессов. Запуск Minecraft за считанные секунды.',
-                'f2-title': 'Мультиязычность',
-                'f2-desc': 'Полная встроенная поддержка русского, украинского и английского языков.',
-                'f3-title': 'Скины и HD Плащи',
-                'f3-desc': 'Удобный менеджер скинов и плащей высокого разрешения в 1 клик.',
-                'f4-title': 'Forge / Fabric / OptiFine',
-                'f4-desc': 'Автоматическая установка любых модификаций и версий прямо в меню.',
-                'f5-title': 'Простая Установка',
-                'f5-desc': 'Удобный инсталятор Inno Setup с автоматическим созданием ярлыков.',
-                'f6-title': 'Автообновления',
-                'f6-desc': 'Всегда актуальные версии Minecraft и обновления безопасности.',
-                'gallery-heading': 'Интерфейс Программы',
-                'gallery-subheading': 'Оцените современный и стильный дизайн лаунчера.',
-                'specs-heading': 'Системные Требования',
-                'specs-subheading': 'Проверьте совместимость вашего компьютера.',
-                'spec-min-title': 'Минимальные',
-                'spec-rec-title': 'Рекомендуемые',
-                'faq-heading': 'Часто Задаваемые Вопросы',
-                'faq-q1': 'Лаунчер действительно бесплатный?',
-                'faq-a1': 'Да, GLauncher полностью бесплатен и не содержит скрытых подписок.',
-                'faq-q2': 'Поддерживаются ли OptiFine и Forge?',
-                'faq-a2': 'Да, все популярные загрузчики модов доступны для установки в клик.',
-                'faq-q3': 'Как сменить язык лаунчера?',
-                'faq-a3': 'Вы можете переключить язык в настройках лаунчера или прямо на этом сайте.'
+                heroDesc: "Современный, быстрый и удобный лаунчер Minecraft Java Edition с поддержкой модов и скинов.",
+                downloadBtn: "📥 Скачать для Windows",
+                bannerTitle: "ТВОЁ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ",
+                bannerDesc: "Управляй версиями, собирай модпаки и настраивай игру под себя.",
+                launchBtn: "► ЗАПУСТИТЬ VANILLA",
+                modsTitle: "Менеджер Модпаков и Модов",
+                setTitle: "Настройки GLauncher"
             },
             ua: {
-                'nav-features': 'Можливості',
-                'nav-preview': 'Галерея',
-                'nav-specs': 'Вимоги',
-                'nav-faq': 'Питання',
-                'nav-download': 'Завантажити',
-                'hero-badge': 'v1.0.0 Реліз Готовий • Висока Швидкість',
-                'hero-title-1': 'Грай у Minecraft',
-                'hero-title-2': 'Без Обмежень',
-                'hero-subtitle': 'Швидкий, легкий та сучасний лаунчер Minecraft з підтримкою української, англійської та російської мов.',
-                'hero-btn-download': 'Завантажити для Windows',
-                'hero-btn-demo': 'Переглянути Огляд',
-                'hero-size': 'Розмір файлу: ~45 МБ',
-                'mock-play': 'Грати',
-                'mock-versions': 'Версії та Моди',
-                'mock-skins': 'Скіни та Плащі',
-                'mock-settings': 'Налаштування',
-                'mock-ram': 'Виділення ОЗП',
-                'mock-lang': 'Активна Мова',
-                'mock-launch-btn': 'ЗАПУСТИТИ ГРУ',
-                'feat-heading': 'Створений для Максимальної Швидкості',
-                'feat-subheading': 'Оптимізований для швидкого запуску гри та мінімального споживання ресурсів.',
-                'f1-title': 'Швидкий Запуск',
-                'f1-desc': 'Нічого зайвого. Запуск Minecraft за лічені секунди.',
-                'f2-title': 'Багатомовність',
-                'f2-desc': 'Повна підтримка української, англійської та російської мов.',
-                'f3-title': 'Скіни та HD Плащі',
-                'f3-desc': 'Зручний менеджер скінів та плащів високої роздільної здатності.',
-                'f4-title': 'Forge / Fabric / OptiFine',
-                'f4-desc': 'Автоматичне завантаження будь-яких модифікацій у декілька кліків.',
-                'f5-title': 'Просте Встановлення',
-                'f5-desc': 'Зручний інсталятор Inno Setup зі створенням ярликів.',
-                'f6-title': 'Автооновлення',
-                'f6-desc': 'Завжди свіжі версії Minecraft та оновлення безпеки.',
-                'gallery-heading': 'Інтерфейс Програми',
-                'gallery-subheading': 'Оцініть сучасний та стильний дизайн лаунчера.',
-                'specs-heading': 'Системні Вимоги',
-                'specs-subheading': 'Перевірте сумісність вашого ПК.',
-                'spec-min-title': 'Мінімальні',
-                'spec-rec-title': 'Рекомендовані',
-                'faq-heading': 'Часті Запитання',
-                'faq-q1': 'Чи безкоштовний лаунчер?',
-                'faq-a1': 'Так, GLauncher абсолютно безкоштовний.',
-                'faq-q2': 'Чи підтримуються OptiFine та Forge?',
-                'faq-a2': 'Так, ви можете обирати будь-які модові версії.',
-                'faq-q3': 'Як змінити мову лаунчера?',
-                'faq-a3': 'Ви можете змінити мову в налаштуваннях програми або на цьому сайті.'
+                heroDesc: "Сучасний, швидкий та зручний лаунчер Minecraft Java Edition з підтримкою модів та скінів.",
+                downloadBtn: "📥 Завантажити для Windows",
+                bannerTitle: "ТВОЯ ПРИГОДА ПОЧИНАЄТЬСЯ ТУТ",
+                bannerDesc: "Керуй версіями, збирай модпаки та налаштовуй гру під себе.",
+                launchBtn: "► ЗАПУСТИТИ VANILLA",
+                modsTitle: "Менеджер Модпаків та Модів",
+                setTitle: "Налаштування GLauncher"
             },
             en: {
-                'nav-features': 'Features',
-                'nav-preview': 'Gallery',
-                'nav-specs': 'Requirements',
-                'nav-faq': 'FAQ',
-                'nav-download': 'Download',
-                'hero-badge': 'v1.0.0 Release Ready • High Performance',
-                'hero-title-1': 'Experience Minecraft',
-                'hero-title-2': 'Without Limits',
-                'hero-subtitle': 'Lightweight, lightning-fast, and multi-language Minecraft launcher built for maximum performance and skin management.',
-                'hero-btn-download': 'Download for Windows',
-                'hero-btn-demo': 'View Preview',
-                'hero-size': 'Setup Size: ~45 MB',
-                'mock-play': 'Play Game',
-                'mock-versions': 'Versions & Mods',
-                'mock-skins': 'Skins & Capes',
-                'mock-settings': 'Settings',
-                'mock-ram': 'RAM Allocation',
-                'mock-lang': 'Active Language',
-                'mock-launch-btn': 'LAUNCH GAME',
-                'feat-heading': 'Designed for Maximum Efficiency',
-                'feat-subheading': 'Engineered with Python & CustomTkinter for ultra-low memory overhead and maximum FPS.',
-                'f1-title': 'Ultra-Fast Launch',
-                'f1-desc': 'Zero bloatware background processes. Launches Minecraft within seconds.',
-                'f2-title': 'Triple Language Support',
-                'f2-desc': 'Native internationalization supporting Russian, Ukrainian, and English.',
-                'f3-title': 'Custom Skins & HD Capes',
-                'f3-desc': 'Upload, preview, and apply custom skins and high-resolution capes.',
-                'f4-title': 'Forge / Fabric / OptiFine',
-                'f4-desc': 'Automatic version downloader for Forge, Fabric, and OptiFine.',
-                'f5-title': '1-Click Windows Setup',
-                'f5-desc': 'Professional Inno Setup installer with automated desktop shortcuts.',
-                'f6-title': 'Automatic Updates',
-                'f6-desc': 'Stays synchronized with official Minecraft releases continuously.',
-                'gallery-heading': 'Interface Showcase',
-                'gallery-subheading': 'Take a look inside GLauncher sleek and responsive GUI.',
-                'specs-heading': 'System Requirements',
-                'specs-subheading': 'Check if your Windows PC meets the launcher specifications.',
-                'spec-min-title': 'Minimum Requirements',
-                'spec-rec-title': 'Recommended Specs',
-                'faq-heading': 'Frequently Asked Questions',
-                'faq-q1': 'Is GLauncher completely free to download?',
-                'faq-a1': 'Yes, GLauncher is 100% free with no hidden payments.',
-                'faq-q2': 'Does it support OptiFine and Forge mods?',
-                'faq-a2': 'Yes, OptiFine, Forge, and Fabric are fully supported.',
-                'faq-q3': 'How do I change the launcher language?',
-                'faq-a3': 'You can change the language directly in settings or on this landing page.'
+                heroDesc: "Modern, fast, and user-friendly Minecraft Java Edition launcher with mod and skin support.",
+                downloadBtn: "📥 Download for Windows",
+                bannerTitle: "YOUR ADVENTURE STARTS HERE",
+                bannerDesc: "Manage versions, build modpacks, and customize your game.",
+                launchBtn: "► LAUNCH VANILLA",
+                modsTitle: "Modpacks & Mods Manager",
+                setTitle: "GLauncher Settings"
             }
         };
 
-        // Set Default Language
-        let currentLang = 'ru';
-
         function setLang(lang) {
-            currentLang = lang;
+            document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + lang).classList.add('active');
 
-            // Highlight Active Lang Button
-            ['ru', 'ua', 'en'].forEach(l => {
-                const btn = document.getElementById(`lang-${l}`);
-                if (l === lang) {
-                    btn.className = 'px-2.5 py-1.5 rounded-lg transition-all bg-brand-500 text-white font-bold shadow-sm';
-                } else {
-                    btn.className = 'px-2.5 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white';
-                }
-            });
-
-            // Update UI text elements
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18nData[lang][key]) {
-                    el.textContent = i18nData[lang][key];
-                }
-            });
+            document.getElementById('hero-desc').innerText = i18n[lang].heroDesc;
+            document.getElementById('download-btn').innerText = i18n[lang].downloadBtn;
+            document.getElementById('m-banner-title').innerText = i18n[lang].bannerTitle;
+            document.getElementById('m-banner-desc').innerText = i18n[lang].bannerDesc;
+            document.getElementById('m-launch-btn').innerText = i18n[lang].launchBtn;
+            document.getElementById('m-mods-title').innerText = i18n[lang].modsTitle;
+            document.getElementById('m-set-title').innerText = i18n[lang].setTitle;
         }
 
-        // Gallery Tab Switching
-        function switchTab(tab) {
-            ['main', 'version', 'skin'].forEach(t => {
-                const btn = document.getElementById(`tab-${t}`);
-                const view = document.getElementById(`view-${t}`);
-                if (t === tab) {
-                    btn.className = 'px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all bg-brand-500 text-white shadow-neon';
-                    view.classList.remove('hidden');
-                } else {
-                    btn.className = 'px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all text-slate-400 hover:text-white hover:bg-white/5';
-                    view.classList.add('hidden');
-                }
-            });
-        }
+        function switchMockupTab(tabName, btn) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-        // Initialize on DOM Ready
-        window.addEventListener('DOMContentLoaded', () => {
-            setLang('ru');
-        });
+            document.querySelectorAll('.mockup-tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
     </script>
 </body>
 </html>
