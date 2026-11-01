@@ -3,275 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLauncher — Minecraft Launcher</title>
+    <title>GLauncher — Next-Gen Minecraft Launcher</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0a0f14;
-            --panel-bg: #0d1b2a;
-            --card-bg: #0f2936;
-            --card-border: #1b4965;
-            --accent-cyan: #00a8cc;
+            --bg-main: #06090e;
+            --panel-bg: #0b131d;
+            --card-bg: #0d1b2a;
+            --card-border: #18334b;
+            --card-border-glow: #168bb0;
+            --accent-cyan: #00d2ff;
             --btn-blue: #168bb0;
+            --btn-blue-hover: #1aa0ca;
             --btn-green: #23a971;
-            --text-main: #ffffff;
-            --text-muted: #8da4b4;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8da4b4;
+            --text-dim: #516b7e;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 210, 255, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 80% 40%, rgba(22, 139, 176, 0.05) 0%, transparent 40%);
         }
 
+        /* HEADER */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 40px;
-            background-color: var(--panel-bg);
-            border-bottom: 1px solid var(--card-border);
+            padding: 20px 48px;
+            background: rgba(11, 19, 29, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(24, 51, 75, 0.6);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .logo-group {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 1.5rem;
-            font-weight: bold;
+            gap: 14px;
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
         }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #1b4965, #00a8cc);
-            border-radius: 8px;
+        .logo-badge {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #168bb0, #00d2ff);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
+            color: #04090d;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.35);
+        }
+
+        .lang-switch {
+            display: flex;
+            background: rgba(13, 27, 42, 0.6);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
         }
 
         .lang-switch button {
             background: transparent;
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
+            border: none;
+            color: var(--text-secondary);
             padding: 6px 14px;
             cursor: pointer;
             border-radius: 6px;
-            margin-left: 4px;
-            transition: 0.2s;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
         }
 
-        .lang-switch button.active, .lang-switch button:hover {
-            background-color: var(--btn-blue);
-            border-color: var(--accent-cyan);
+        .lang-switch button.active {
+            background: var(--btn-blue);
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(22, 139, 176, 0.4);
         }
 
+        /* HERO SECTION */
         .hero {
             text-align: center;
-            padding: 50px 20px 30px 20px;
+            padding: 60px 20px 40px 20px;
+            position: relative;
+        }
+
+        .version-tag {
+            display: inline-block;
+            background: rgba(0, 210, 255, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 210, 255, 0.25);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 12px;
-            color: var(--text-main);
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 16px;
+            background: linear-gradient(180deg, #ffffff 0%, #8da4b4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 24px auto;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 620px;
+            margin: 0 auto 36px auto;
+            line-height: 1.6;
         }
 
         .btn-download {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #168bb0, #00a8cc);
-            color: white;
+            gap: 12px;
+            background: linear-gradient(135deg, #168bb0 0%, #00a8cc 100%);
+            color: #ffffff;
             text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: bold;
-            padding: 16px 36px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 168, 204, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 1.15rem;
+            font-weight: 700;
+            padding: 18px 42px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 168, 204, 0.35);
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 168, 204, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 210, 255, 0.5);
+            background: linear-gradient(135deg, #1aa0ca 0%, #00d2ff 100%);
         }
 
-        /* Mockup Window */
-        .preview-container {
-            max-width: 1000px;
-            width: 95%;
-            margin: 30px auto 60px auto;
-            background-color: var(--panel-bg);
+        /* LAUNCHER MOCKUP WRAPPER */
+        .preview-wrapper {
+            max-width: 1100px;
+            width: 92%;
+            margin: 20px auto 80px auto;
+            position: relative;
+        }
+
+        .preview-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.3), transparent 50%, rgba(35, 169, 113, 0.2));
+            border-radius: 16px;
+            z-index: 0;
+            filter: blur(8px);
+        }
+
+        .mockup-window {
+            position: relative;
+            z-index: 1;
+            background: #081119;
             border: 1px solid var(--card-border);
-            border-radius: 10px;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
         }
 
-        .window-header {
-            background-color: #081119;
-            padding: 10px 16px;
+        /* WINDOW TITLEBAR */
+        .titlebar {
+            background: #050a0f;
+            padding: 12px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--card-border);
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            border-bottom: 1px solid rgba(24, 51, 75, 0.5);
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .window-controls span {
-            display: inline-block;
+        .titlebar-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .titlebar-controls div {
             width: 12px;
             height: 12px;
-            border-radius: 50%;
-            margin-left: 6px;
-            background-color: #444;
+            border: 1px solid #233b4e;
+            border-radius: 2px;
         }
 
+        /* MOCKUP CONTENT */
         .mockup-body {
-            padding: 20px;
-            min-height: 400px;
+            background: #091522;
+            padding: 24px;
+            min-height: 480px;
         }
 
-        .mockup-tab-content {
+        .tab-content {
             display: none;
+            animation: fadeIn 0.25s ease;
         }
 
-        .mockup-tab-content.active {
+        .tab-content.active {
             display: block;
         }
 
-        /* Hero banner inside mockup */
-        .mockup-hero-banner {
-            background: linear-gradient(90deg, #0f2936, #1b4965);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* TAB 1: MAIN */
+        .hero-banner {
+            background: linear-gradient(90deg, #0d2334 0%, #0d1b2a 100%);
             border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .mockup-hero-banner h2 {
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-            margin-top: 5px;
+        .hero-banner-sub {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
         }
 
-        .mockup-hero-banner p {
-            color: var(--text-muted);
+        .hero-banner h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .hero-banner p {
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
-        .mockup-grid {
+        .banner-logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid var(--card-border-glow);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--accent-cyan);
+        }
+
+        .grid-main {
             display: grid;
             grid-template-columns: 1.4fr 1fr;
             gap: 20px;
         }
 
-        .mockup-card {
-            background-color: var(--card-bg);
+        .ui-card {
+            background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 15px;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 16px;
         }
 
-        .mockup-card-title {
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-        }
-
-        .btn-launch {
-            width: 100%;
-            background-color: var(--btn-blue);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
+        .card-header-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-dim);
+            letter-spacing: 1.2px;
+            margin-bottom: 14px;
             text-transform: uppercase;
         }
 
-        /* Bottom Nav Bar inside mockup */
-        .mockup-bottom-bar {
-            background-color: #081119;
-            padding: 12px 20px;
+        .profile-box {
+            background: #08121c;
+            border: 1px solid rgba(24, 51, 75, 0.8);
+            border-radius: 8px;
+            padding: 12px 16px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-top: 1px solid var(--card-border);
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
-        .nav-buttons {
+        .btn-launch-vanilla {
+            width: 100%;
+            background: linear-gradient(135deg, #168bb0, #1aa0ca);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(22, 139, 176, 0.3);
+        }
+
+        .system-status-card {
+            background: rgba(35, 169, 113, 0.08);
+            border: 1px solid rgba(35, 169, 113, 0.3);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--btn-green);
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--btn-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--btn-green);
+        }
+
+        /* TAB 2: MODS */
+        .mod-create-row {
             display: flex;
             gap: 10px;
+            margin-top: 12px;
         }
 
-        .nav-btn {
-            background-color: var(--card-bg);
+        .ui-input {
+            flex: 1;
+            background: #060e17;
             border: 1px solid var(--card-border);
             color: white;
-            padding: 8px 14px;
+            padding: 10px 14px;
             border-radius: 6px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: 0.2s;
+            font-size: 0.9rem;
+            outline: none;
         }
 
-        .nav-btn.active, .nav-btn:hover {
-            background-color: var(--btn-blue);
-            border-color: var(--accent-cyan);
-        }
-
-        .profile-selects {
-            display: flex;
-            gap: 12px;
-        }
-
-        .select-box {
-            background-color: var(--card-bg);
+        .ui-dropdown {
+            background: #060e17;
             border: 1px solid var(--card-border);
-            padding: 6px 12px;
+            color: white;
+            padding: 10px 14px;
             border-radius: 6px;
             font-size: 0.85rem;
             display: flex;
             align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .btn-ui-action {
+            background: var(--btn-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .mod-search-container {
+            height: 220px;
+            background: #060e17;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            margin-top: 14px;
+            padding: 12px;
+        }
+
+        /* TAB 3: SETTINGS */
+        .setting-row {
+            margin-bottom: 20px;
+        }
+
+        .setting-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        /* BOTTOM NAVBAR */
+        .bottom-bar {
+            background: #050b11;
+            border-top: 1px solid var(--card-border);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-tabs {
+            display: flex;
             gap: 8px;
         }
 
+        .nav-tab-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab-btn.active, .nav-tab-btn:hover {
+            background: var(--btn-blue);
+            border-color: var(--accent-cyan);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(22, 139, 176, 0.35);
+        }
+
+        .profile-selector {
+            display: flex;
+            gap: 12px;
+        }
+
+        .select-pill {
+            background: #0a1622;
+            border: 1px solid var(--card-border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+        }
+
+        .select-pill strong {
+            color: #ffffff;
+        }
+
+        /* FOOTER */
         footer {
             text-align: center;
-            padding: 20px;
-            color: var(--text-muted);
+            padding: 30px;
+            color: var(--text-dim);
             font-size: 0.9rem;
-            border-top: 1px solid var(--card-border);
+            border-top: 1px solid rgba(24, 51, 75, 0.4);
             margin-top: auto;
         }
     </style>
@@ -280,7 +490,7 @@
 
     <header>
         <div class="logo-group">
-            <div class="logo-icon">G</div>
+            <div class="logo-badge">G</div>
             <span>GLauncher</span>
         </div>
         <div class="lang-switch">
@@ -291,99 +501,128 @@
     </header>
 
     <section class="hero">
-        <h1 id="hero-title">GLauncher Beta 1.0.3</h1>
-        <p id="hero-desc">Современный, быстрый и удобный лаунчер Minecraft Java Edition с поддержкой модов и скинов.</p>
+        <div class="version-tag">✨ GLauncher Beta 1.0.3</div>
+        <h1 id="hero-title">GLauncher Minecraft</h1>
+        <p id="hero-desc">Быстрый, стильный и легкий лаунчер Minecraft Java Edition. Полное управление версиями, модпаками и скинами.</p>
         <a href="GLauncher_Installer.exe" class="btn-download" id="download-btn">
             📥 Скачать для Windows
         </a>
     </section>
 
-    <!-- Interactive Mockup -->
-    <div class="preview-container">
-        <div class="window-header">
-            <span>GLauncher Beta 1.0.3 — Minecraft Launcher</span>
-            <div class="window-controls">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
-
-        <div class="mockup-body">
-            <!-- TAB 1: MAIN -->
-            <div id="tab-main" class="mockup-tab-content active">
-                <div class="mockup-hero-banner">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--accent-cyan); letter-spacing: 1px;">GLAUNCHER / MINECRAFT JAVA</div>
-                        <h2 id="m-banner-title">ТВОЁ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ</h2>
-                        <p id="m-banner-desc">Управляй версиями, собирай модпаки и настраивай игру под себя.</p>
-                    </div>
-                    <div class="logo-icon" style="width: 50px; height: 50px; font-size: 1.8rem;">G</div>
+    <!-- LAUNCHER INTERFACE MOCKUP -->
+    <div class="preview-wrapper">
+        <div class="mockup-window">
+            <div class="titlebar">
+                <span>GLauncher Beta 1.0.3 — Minecraft Launcher</span>
+                <div class="titlebar-controls">
+                    <div></div><div></div><div></div>
                 </div>
+            </div>
 
-                <div class="mockup-grid">
-                    <div>
-                        <div class="mockup-card">
-                            <div class="mockup-card-title">ИГРОВОЙ ЦЕНТР</div>
-                            <div style="margin-bottom: 15px; background: #0b1724; padding: 10px; border-radius: 6px;">
-                                <small style="color: var(--accent-cyan);">✦ Твой профиль</small> <br>
-                                <span style="font-size: 0.85rem;">Ник и версия — в нижней панели</span>
+            <div class="mockup-body">
+                <!-- TAB 1: HOME -->
+                <div id="tab-main" class="tab-content active">
+                    <div class="hero-banner">
+                        <div>
+                            <div class="hero-banner-sub">GLAUNCHER / MINECRAFT JAVA</div>
+                            <h2 id="m-banner-title">ТВОЁ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ</h2>
+                            <p id="m-banner-desc">Управляй версиями, собирай модпаки и настраивай игру под себя.</p>
+                        </div>
+                        <div class="banner-logo">G</div>
+                    </div>
+
+                    <div class="grid-main">
+                        <div>
+                            <div class="ui-card">
+                                <div class="card-header-label" id="m-center-title">ИГРОВОЙ ЦЕНТР</div>
+                                <div class="profile-box">
+                                    <div style="color: var(--accent-cyan); font-size: 1.2rem;">✦</div>
+                                    <div>
+                                        <div style="font-size: 0.85rem; font-weight: 700;" id="m-prof-label">Твой профиль</div>
+                                        <div style="font-size: 0.78rem; color: var(--text-dim);" id="m-prof-sub">Ник и версия — в нижней панели</div>
+                                    </div>
+                                </div>
+                                <button class="btn-launch-vanilla" id="m-launch-btn">► ЗАПУСТИТЬ VANILLA</button>
                             </div>
-                            <button class="btn-launch" id="m-launch-btn">► ЗАПУСТИТЬ VANILLA</button>
+                        </div>
+
+                        <div>
+                            <div class="ui-card">
+                                <div class="card-header-label" id="m-news-title">✦ ОБНОВЛЕНИЯ</div>
+                                <h4 style="margin-bottom: 6px; font-size: 1rem;">GLauncher Beta</h4>
+                                <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;" id="m-news-desc">
+                                    Новый интерфейс в зелёно-синих тонах. Удобная панель профиля. Индикатор установки и запуска Vanilla.
+                                </p>
+                            </div>
+
+                            <div class="system-status-card">
+                                <div class="status-indicator">
+                                    <div class="status-dot"></div>
+                                    <span id="m-status-title">СИСТЕМА ГОТОВА</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-secondary);" id="m-status-desc">
+                                    GLauncher помогает управлять твоими версиями и модпаками.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <div class="mockup-card">
-                            <div class="mockup-card-title">✦ ОБНОВЛЕНИЯ</div>
-                            <h4 style="margin-bottom: 6px;">GLauncher Beta</h4>
-                            <p style="font-size: 0.8rem; color: var(--text-muted);">Новый интерфейс в зелёно-синих тонах. Индикатор установки и запуска Vanilla.</p>
+                </div>
+
+                <!-- TAB 2: MODS -->
+                <div id="tab-mods" class="tab-content">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 16px;" id="m-mods-title">Менеджер Модпаков и Модов</h3>
+                    <div class="ui-card">
+                        <div class="card-header-label" id="m-create-label">Создать новый модпак:</div>
+                        <div class="mod-create-row">
+                            <input type="text" class="ui-input" placeholder="Название модпака...">
+                            <div class="ui-dropdown">26.3 ▾</div>
+                            <div class="ui-dropdown">fabric ▾</div>
+                            <button class="btn-ui-action" id="m-create-btn">Создать</button>
                         </div>
-                        <div class="mockup-card" style="border-color: var(--btn-green); background: rgba(35, 169, 113, 0.1);">
-                            <div style="color: var(--btn-green); font-weight: bold; font-size: 0.85rem;">● СИСТЕМА ГОТОВА</div>
-                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">GLauncher помогает управлять твоими версиями и модпаками.</p>
+                    </div>
+                    <div class="mod-search-container">
+                        <input type="text" class="ui-input" style="width: 100%;" placeholder="Введите название мода для поиска на Modrinth...">
+                    </div>
+                </div>
+
+                <!-- TAB 3: SETTINGS -->
+                <div id="tab-settings" class="tab-content">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 16px;" id="m-set-title">Настройки GLauncher</h3>
+                    <div class="ui-card">
+                        <div class="setting-row">
+                            <div class="setting-label" id="m-ram-label">Выделение оперативной памяти (RAM):</div>
+                            <div class="ui-dropdown" style="justify-content: space-between;">
+                                <span>6 ГБ</span> <span>▾</span>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label" id="m-path-label">Путь к папке лаунчера и игровым файлам:</div>
+                            <div class="ui-input" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary);">
+                                C:\Users\Compic\.glauncher
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 2: MODS -->
-            <div id="tab-mods" class="mockup-tab-content">
-                <h3 style="margin-bottom: 15px;" id="m-mods-title">Менеджер Модпаков и Модов</h3>
-                <div class="mockup-card">
-                    <div style="font-size: 0.85rem; margin-bottom: 10px;">Создать новый модпак:</div>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" placeholder="Название модпака..." style="flex:1; background: #081119; border: 1px solid var(--card-border); color: white; padding: 8px; border-radius: 4px;">
-                        <div class="select-box">26.3 ▾</div>
-                        <div class="select-box">fabric ▾</div>
-                        <button style="background: var(--btn-blue); color: white; border: none; padding: 8px 16px; border-radius: 4px;">Создать</button>
-                    </div>
+            <!-- BOTTOM NAVIGATION BAR -->
+            <div class="bottom-bar">
+                <div class="nav-tabs">
+                    <button class="nav-tab-btn active" onclick="switchTab('main', this)">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </button>
+                    <button class="nav-tab-btn" onclick="switchTab('mods', this)">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    </button>
+                    <button class="nav-tab-btn" onclick="switchTab('settings', this)">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                    </button>
                 </div>
-            </div>
 
-            <!-- TAB 3: SETTINGS -->
-            <div id="tab-settings" class="mockup-tab-content">
-                <h3 style="margin-bottom: 15px;" id="m-set-title">Настройки GLauncher</h3>
-                <div class="mockup-card">
-                    <div style="font-size: 0.85rem; margin-bottom: 8px;">Выделение оперативной памяти (RAM):</div>
-                    <div class="select-box" style="justify-content: space-between; margin-bottom: 15px;">
-                        <span>6 ГБ</span> <span>▾</span>
-                    </div>
-                    <div style="font-size: 0.85rem; margin-bottom: 8px;">Путь к игре:</div>
-                    <div style="background: #081119; padding: 8px; border-radius: 4px; border: 1px solid var(--card-border); font-family: monospace; font-size: 0.85rem; color: var(--text-muted);">
-                        C:\Users\Compic\.glauncher
-                    </div>
+                <div class="profile-selector">
+                    <div class="select-pill">ПРОФИЛЬ <strong>KELIRT</strong> ▾</div>
+                    <div class="select-pill"><strong>26.3</strong> ▾</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Interactive Nav Bar -->
-        <div class="mockup-bottom-bar">
-            <div class="nav-buttons">
-                <button class="nav-btn active" onclick="switchMockupTab('main', this)">🏠</button>
-                <button class="nav-btn" onclick="switchMockupTab('mods', this)">📦</button>
-                <button class="nav-btn" onclick="switchMockupTab('settings', this)">⚙️</button>
-            </div>
-            <div class="profile-selects">
-                <div class="select-box"><span>ПРОФИЛЬ</span> <strong>KELIRT</strong> ▾</div>
-                <div class="select-box"><strong>26.3</strong> ▾</div>
             </div>
         </div>
     </div>
@@ -395,31 +634,64 @@
     <script>
         const i18n = {
             ru: {
-                heroDesc: "Современный, быстрый и удобный лаунчер Minecraft Java Edition с поддержкой модов и скинов.",
+                heroDesc: "Быстрый, стильный и легкий лаунчер Minecraft Java Edition. Полное управление версиями, модпаками и скинами.",
                 downloadBtn: "📥 Скачать для Windows",
                 bannerTitle: "ТВОЁ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ",
                 bannerDesc: "Управляй версиями, собирай модпаки и настраивай игру под себя.",
+                centerTitle: "ИГРОВОЙ ЦЕНТР",
+                profLabel: "Твой профиль",
+                profSub: "Ник и версия — в нижней панели",
                 launchBtn: "► ЗАПУСТИТЬ VANILLA",
+                newsTitle: "✦ ОБНОВЛЕНИЯ",
+                newsDesc: "Новый интерфейс в зелёно-синих тонах. Удобная панель профиля. Индикатор установки и запуска Vanilla.",
+                statusTitle: "СИСТЕМА ГОТОВА",
+                statusDesc: "GLauncher помогает управлять твоими версиями и модпаками.",
                 modsTitle: "Менеджер Модпаков и Модов",
-                setTitle: "Настройки GLauncher"
+                createLabel: "Создать новый модпак:",
+                createBtn: "Создать",
+                setTitle: "Настройки GLauncher",
+                ramLabel: "Выделение оперативной памяти (RAM):",
+                pathLabel: "Путь к папке лаунчера и игровым файлам:"
             },
             ua: {
-                heroDesc: "Сучасний, швидкий та зручний лаунчер Minecraft Java Edition з підтримкою модів та скінів.",
+                heroDesc: "Швидкий, стильний та легкий лаунчер Minecraft Java Edition. Повне керування версіями, модпаками та скінами.",
                 downloadBtn: "📥 Завантажити для Windows",
                 bannerTitle: "ТВОЯ ПРИГОДА ПОЧИНАЄТЬСЯ ТУТ",
                 bannerDesc: "Керуй версіями, збирай модпаки та налаштовуй гру під себе.",
+                centerTitle: "ІГРОВИЙ ЦЕНТР",
+                profLabel: "Твій профіль",
+                profSub: "Нік та версія — у нижній панелі",
                 launchBtn: "► ЗАПУСТИТИ VANILLA",
+                newsTitle: "✦ ОНОВЛЕННЯ",
+                newsDesc: "Новий інтерфейс у зелено-синіх тонах. Зручна панель профілю. Індикатор встановлення та запуску Vanilla.",
+                statusTitle: "СИСТЕМА ГОТОВА",
+                statusDesc: "GLauncher допомагає керувати твоїми версіями та модпаками.",
                 modsTitle: "Менеджер Модпаків та Модів",
-                setTitle: "Налаштування GLauncher"
+                createLabel: "Створити новий модпак:",
+                createBtn: "Створити",
+                setTitle: "Налаштування GLauncher",
+                ramLabel: "Виділення оперативної пам'яті (RAM):",
+                pathLabel: "Шлях до папки лаунчера та ігрових файлів:"
             },
             en: {
-                heroDesc: "Modern, fast, and user-friendly Minecraft Java Edition launcher with mod and skin support.",
+                heroDesc: "Fast, stylish, and lightweight Minecraft Java Edition launcher. Complete management for versions, modpacks, and skins.",
                 downloadBtn: "📥 Download for Windows",
                 bannerTitle: "YOUR ADVENTURE STARTS HERE",
                 bannerDesc: "Manage versions, build modpacks, and customize your game.",
+                centerTitle: "GAME CENTER",
+                profLabel: "Your Profile",
+                profSub: "Username and version — in bottom bar",
                 launchBtn: "► LAUNCH VANILLA",
+                newsTitle: "✦ UPDATES",
+                newsDesc: "New teal/cyan UI theme. Convenient profile bar. Vanilla setup & status indicator.",
+                statusTitle: "SYSTEM READY",
+                statusDesc: "GLauncher helps manage all your versions and modpacks.",
                 modsTitle: "Modpacks & Mods Manager",
-                setTitle: "GLauncher Settings"
+                createLabel: "Create new modpack:",
+                createBtn: "Create",
+                setTitle: "GLauncher Settings",
+                ramLabel: "RAM Allocation:",
+                pathLabel: "Launcher & Game Files Directory:"
             }
         };
 
@@ -427,20 +699,32 @@
             document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + lang).classList.add('active');
 
-            document.getElementById('hero-desc').innerText = i18n[lang].heroDesc;
-            document.getElementById('download-btn').innerText = i18n[lang].downloadBtn;
-            document.getElementById('m-banner-title').innerText = i18n[lang].bannerTitle;
-            document.getElementById('m-banner-desc').innerText = i18n[lang].bannerDesc;
-            document.getElementById('m-launch-btn').innerText = i18n[lang].launchBtn;
-            document.getElementById('m-mods-title').innerText = i18n[lang].modsTitle;
-            document.getElementById('m-set-title').innerText = i18n[lang].setTitle;
+            const t = i18n[lang];
+            document.getElementById('hero-desc').innerText = t.heroDesc;
+            document.getElementById('download-btn').innerText = t.downloadBtn;
+            document.getElementById('m-banner-title').innerText = t.bannerTitle;
+            document.getElementById('m-banner-desc').innerText = t.bannerDesc;
+            document.getElementById('m-center-title').innerText = t.centerTitle;
+            document.getElementById('m-prof-label').innerText = t.profLabel;
+            document.getElementById('m-prof-sub').innerText = t.profSub;
+            document.getElementById('m-launch-btn').innerText = t.launchBtn;
+            document.getElementById('m-news-title').innerText = t.newsTitle;
+            document.getElementById('m-news-desc').innerText = t.newsDesc;
+            document.getElementById('m-status-title').innerText = t.statusTitle;
+            document.getElementById('m-status-desc').innerText = t.statusDesc;
+            document.getElementById('m-mods-title').innerText = t.modsTitle;
+            document.getElementById('m-create-label').innerText = t.createLabel;
+            document.getElementById('m-create-btn').innerText = t.createBtn;
+            document.getElementById('m-set-title').innerText = t.setTitle;
+            document.getElementById('m-ram-label').innerText = t.ramLabel;
+            document.getElementById('m-path-label').innerText = t.pathLabel;
         }
 
-        function switchMockupTab(tabName, btn) {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            document.querySelectorAll('.mockup-tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
         }
     </script>
